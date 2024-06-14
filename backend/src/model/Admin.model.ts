@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./user.model";
 
 @Entity()
 export class Admin {
@@ -7,5 +8,8 @@ export class Admin {
 
     @Column()
     role: string
+
+    @OneToOne(() => User, (user) => user.admin)
+    user: User
 
 }

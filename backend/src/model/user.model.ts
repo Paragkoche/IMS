@@ -1,5 +1,11 @@
 import { compare, genSalt, hash } from "bcrypt";
-import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { SuperAdmin } from "./SuperAdmin.model";
+import { Admin } from "./Admin.model";
+import { Developer } from "./Developer.model";
+import { Manager } from "./Manager.model";
+import { EndUser } from "./EndUser.model";
+import { StoreManager } from "./StoreManager.model";
 
 @Entity()
 export class User {
@@ -23,6 +29,35 @@ export class User {
 
     @UpdateDateColumn({ type: "datetime", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
     updated_at: Date;
+
+    @OneToOne(() => SuperAdmin, (superAdmin) => superAdmin.user)
+    @JoinColumn()
+    superAdmin: SuperAdmin;
+
+    @OneToOne(() => Admin, (admin) => admin.user)
+    @JoinColumn()
+
+    admin: Admin;
+
+    @OneToOne(() => Developer, (dev) => dev.user)
+    @JoinColumn()
+
+    developer: Developer;
+
+    @OneToOne(() => Manager, (manager) => manager.user)
+    @JoinColumn()
+
+    manager: Manager
+
+    @OneToOne(() => EndUser, (user) => user.user)
+    @JoinColumn()
+
+    endUser: EndUser
+
+    @OneToOne(() => StoreManager, (StoreManager) => StoreManager.user)
+    @JoinColumn()
+
+    storeManage: StoreManager
 
 
     @BeforeInsert()

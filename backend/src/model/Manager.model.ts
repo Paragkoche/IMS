@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./user.model";
 
 @Entity()
 export class Manager {
@@ -19,4 +20,7 @@ export class Manager {
 
     @Column()
     bond: Date
+
+    @OneToOne(() => User, (user) => user.manager)
+    user: User
 }

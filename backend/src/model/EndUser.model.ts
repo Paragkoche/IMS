@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./user.model";
 
 @Entity()
 export class EndUser {
@@ -16,4 +17,7 @@ export class EndUser {
 
     @Column()
     phoneNumber: string
+
+    @OneToOne(() => User, (user) => user.endUser)
+    user: User
 }

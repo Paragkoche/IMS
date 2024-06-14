@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Store } from "./Store.model";
+import { User } from "./user.model";
 
 @Entity()
 export class StoreManager {
@@ -19,4 +21,11 @@ export class StoreManager {
 
     @Column()
     bond: Date
+
+    @OneToOne(() => Store, (store) => store.StoreManager)
+    @JoinColumn()
+    Store: Store;
+
+    @OneToOne(() => User, (user) => user.storeManage)
+    user: User
 }
