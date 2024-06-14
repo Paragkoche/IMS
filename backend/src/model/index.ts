@@ -8,4 +8,6 @@ export * from "./user.model"
 export * from "./Store.model"
 export * from "./Item";
 export * from "./Order.model"
-export * from "./StoreOrder"
+export * from "./StoreOrder";
+
+export * from "./vendor"
