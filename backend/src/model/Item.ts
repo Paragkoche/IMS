@@ -1,6 +1,7 @@
-import { Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Orders } from "./Order.model";
 import { Store } from "./Store.model";
+import { WCard } from "./w-card";
 
 @Entity()
 export class Items {
@@ -33,6 +34,9 @@ export class Items {
 
     @ManyToOne(() => Store, (stor) => stor.itemsAvailableInStore)
     store: Store;
+
+    @OneToOne(() => WCard)
+    wCard: WCard;
 }
 
 @Entity()

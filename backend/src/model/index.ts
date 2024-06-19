@@ -9,5 +9,9 @@ export * from "./Store.model"
 export * from "./Item";
 export * from "./Order.model"
 export * from "./StoreOrder";
-
+export * from "./DeliveryPatenters.model";
+export * from "./w-card";
+export * from "./emplyeeDoc";
+export * from "./bills.model";
+export * from "./order_payment";
 export * from "./vendor"

@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Store } from "./Store.model";
 import { User } from "./user.model";
+import { Doc } from "./emplyeeDoc";
 
 @Entity()
 export class StoreManager {
@@ -28,4 +29,7 @@ export class StoreManager {
 
     @OneToOne(() => User, (user) => user.storeManage)
     user: User
+
+    @OneToMany(() => Doc, (doc) => doc.storeManager)
+    doc: Doc[]
 }

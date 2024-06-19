@@ -1,5 +1,6 @@
-import { Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Items } from "./Item";
+import { deliveryPartner } from "./DeliveryPatenters.model";
 
 @Entity()
 export class Orders {
@@ -19,5 +20,6 @@ export class Orders {
     @JoinTable()
     items: Items[]
 
-
+    @ManyToOne(() => deliveryPartner, (dp) => dp.ord)
+    dp: deliveryPartner;
 }

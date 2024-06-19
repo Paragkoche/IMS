@@ -1,5 +1,6 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.model";
+import { Doc } from "./emplyeeDoc";
 
 @Entity()
 export class Manager {
@@ -22,5 +23,9 @@ export class Manager {
     bond: Date
 
     @OneToOne(() => User, (user) => user.manager)
-    user: User
+    user: User;
+
+    @OneToMany(() => Doc, (doc) => doc.manager)
+    @JoinColumn()
+    doc: Doc[]
 }

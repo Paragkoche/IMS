@@ -37,22 +37,18 @@ export class User {
 
     @OneToOne(() => Admin, (admin) => admin.user)
     @JoinColumn()
-
     admin: Admin;
 
     @OneToOne(() => Developer, (dev) => dev.user)
     @JoinColumn()
-
     developer: Developer;
 
     @OneToOne(() => Manager, (manager) => manager.user)
     @JoinColumn()
-
     manager: Manager
 
     @OneToOne(() => EndUser, (user) => user.user)
     @JoinColumn()
-
     endUser: EndUser
 
     @OneToOne(() => StoreManager, (StoreManager) => StoreManager.user)

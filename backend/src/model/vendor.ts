@@ -1,5 +1,6 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.model";
+import { StoreOrders } from "./StoreOrder";
 
 @Entity()
 export class Vendor {
@@ -11,5 +12,8 @@ export class Vendor {
 
     @OneToOne(() => User, (user) => user.vendor)
     user: User
+
+    @OneToMany(() => StoreOrders, (SOrd) => SOrd.vendor)
+    orders: StoreOrders[]
 
 }

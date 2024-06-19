@@ -1,5 +1,7 @@
-import { Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Items } from "./Item";
+import { deliveryPartner } from "./DeliveryPatenters.model";
+import { Vendor } from "./vendor";
 
 @Entity()
 export class StoreOrders {
@@ -19,5 +21,8 @@ export class StoreOrders {
     @JoinTable()
     items: Items[]
 
-
+    @ManyToOne(() => deliveryPartner, (dp) => dp.storeOrder)
+    dp: deliveryPartner;
+    @ManyToOne(() => Vendor, (vendor) => vendor.orders)
+    vendor: Vendor
 }
