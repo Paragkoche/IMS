@@ -1,5 +1,8 @@
 import express from "express";
+import v1Routeing from "./router";
+const app = express();
+app.use(express.json());
 
-const app = express()
+app.use("/api/v1", v1Routeing)
 
 export default app
