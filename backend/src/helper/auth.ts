@@ -10,7 +10,32 @@ import {
   superAdminRepo,
   vendorRepo,
 } from "../db/repo.db";
-import { AuthReq } from "../types/para";
+import { AuthReq, userRole } from "../types/para";
+
+const checkRole = async (
+  role: userRole | null,
+  repo:
+    | typeof superAdminRepo
+    | typeof adminRepo
+    | typeof developerRepo
+    | typeof endUserRepo
+    | typeof managerRepo
+    | typeof vendorRepo
+    | typeof storeManagerRepo
+    | null,
+  userId: number
+) => {
+  if (repo == null) return [false, null];
+  let data = await repo.findOne({
+    where: {
+      user: {
+        id: userId,
+      },
+    },
+  });
+
+  return [role !== null && data !== null, data];
+};
 export const checkAuth = async (
   req: AuthReq<any>,
   res: Response,
@@ -34,7 +59,7 @@ export const checkAuth = async (
         error: validToken,
       });
     }
-    const { id, role } = validToken;
+    const { id, role }: { id: number; role: userRole } | any = validToken;
     const user = await UserRepo.findOne({
       where: { id },
     });
@@ -44,132 +69,33 @@ export const checkAuth = async (
         message: "UN-AUTH",
       });
     }
-    let roleData = null;
-    let data = null;
-    switch (role) {
-      case "superAdmin":
-        data = await superAdminRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "admin":
-        data = await adminRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "developer":
-        data = await developerRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "endUser":
-        data = await endUserRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "manager":
-        data = await managerRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "storeManager":
-        data = await storeManagerRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "vendor":
-        data = await vendorRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      default:
-        roleData = null;
-        data = null;
-        break;
-    }
-    if (roleData == null) {
+
+    const [isValidRole, roleData] = await checkRole(
+      role,
+      role == "superAdmin"
+        ? superAdminRepo
+        : role == "admin"
+        ? adminRepo
+        : role == "developer"
+        ? developerRepo
+        : role == "endUser"
+        ? endUserRepo
+        : role == "manager"
+        ? managerRepo
+        : role == "storeManager"
+        ? storeManagerRepo
+        : role == "vendor"
+        ? vendorRepo
+        : null,
+      user.id
+    );
+    if (!isValidRole || !roleData) {
       return res.status(401).json({
         status: 401,
         message: "Role data not found!!",
       });
     }
+
     req.userData = user;
     req.roleData = roleData;
     req.role = role;

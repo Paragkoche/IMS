@@ -5,6 +5,6 @@ const router = Router();
 
 router.post("/login", controller.UserLogin);
 router.post("/register", controller.UserRegister);
-router.post("/log-out", controller.UserLogOut);
+router.post("/log-out", checkAuth, controller.UserLogOut);
 router.put("/ref-token", checkAuth, controller.refToken);
 export default router;
