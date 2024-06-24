@@ -1,9 +1,10 @@
 import { Router } from "express";
-import * as controller from "../controller"
-const router = Router()
+import * as controller from "../controller";
+import { checkAuth } from "../helper/auth";
+const router = Router();
 
 router.post("/login", controller.UserLogin);
 router.post("/register", controller.UserRegister);
 router.post("/log-out", controller.UserLogOut);
-
-export default router
+router.put("/ref-token", checkAuth, controller.refToken);
+export default router;
