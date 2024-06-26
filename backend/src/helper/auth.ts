@@ -12,7 +12,7 @@ import {
 } from "../db/repo.db";
 import { AuthReq, userRole } from "../types/para";
 
-const checkRole = async (
+export const checkRole = async (
   role: userRole | null,
   repo:
     | typeof superAdminRepo
