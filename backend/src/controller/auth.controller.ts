@@ -12,6 +12,8 @@ import {
 } from "../db/repo.db";
 import { createToken } from "../lib";
 import { AuthReq } from "../types/para";
+import { checkRole } from "../helper/auth";
+import { Error500 } from "../helper/errorhandler.helper";
 
 export const UserRegister = async (req: Request, res: Response) => {
   try {
@@ -79,16 +81,12 @@ export const UserRegister = async (req: Request, res: Response) => {
     });
     return res.json({
       data: {
-        userData: newUser,
+        userData: newUser.toJson(),
         roleData,
       },
     });
   } catch (e) {
-    console.log(e);
-    return res.status(500).json({
-      status: 500,
-      message: "internal server error",
-    });
+    return Error500(res, e);
   }
 };
 export const UserLogin = async (req: Request, res: Response) => {
@@ -119,127 +117,27 @@ export const UserLogin = async (req: Request, res: Response) => {
         message: "password invalid",
       });
     }
-    let roleData = null;
-    let data = null;
-    switch (body.data.role) {
-      case "superAdmin":
-        data = await superAdminRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "admin":
-        data = await adminRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "developer":
-        data = await developerRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "endUser":
-        data = await endUserRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "manager":
-        data = await managerRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "storeManager":
-        data = await storeManagerRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      case "vendor":
-        data = await vendorRepo.findOne({
-          where: {
-            user: {
-              id: user.id,
-            },
-          },
-        });
-        if (!data) {
-          return res.status(401).json({
-            status: 401,
-            message: "Role data not found!!",
-          });
-        }
-        roleData = data;
-        break;
-      default:
-        roleData = null;
-        data = null;
-        break;
-    }
-    if (roleData == null) {
+
+    const [isValidRole, roleData] = await checkRole(
+      body.data.role,
+      body.data.role == "superAdmin"
+        ? superAdminRepo
+        : body.data.role == "admin"
+        ? adminRepo
+        : body.data.role == "developer"
+        ? developerRepo
+        : body.data.role == "endUser"
+        ? endUserRepo
+        : body.data.role == "manager"
+        ? managerRepo
+        : body.data.role == "storeManager"
+        ? storeManagerRepo
+        : body.data.role == "vendor"
+        ? vendorRepo
+        : null,
+      user.id
+    );
+    if (!isValidRole || !roleData) {
       return res.status(401).json({
         status: 401,
         message: "Role data not found!!",
@@ -260,11 +158,7 @@ export const UserLogin = async (req: Request, res: Response) => {
       },
     });
   } catch (e) {
-    console.log(e);
-    return res.status(500).json({
-      status: 500,
-      message: "internal server error",
-    });
+    return Error500(res, e);
   }
 };
 export const UserLogOut = (req: Request, res: Response) => {
@@ -275,11 +169,7 @@ export const UserLogOut = (req: Request, res: Response) => {
       message: "ok",
     });
   } catch (e) {
-    console.log(e);
-    return res.status(500).json({
-      status: 500,
-      message: "internal server error",
-    });
+    return Error500(res, e);
   }
 };
 
@@ -295,10 +185,6 @@ export const refToken = (req: AuthReq<any>, res: Response) => {
       message: "ok",
     });
   } catch (e) {
-    console.log(e);
-    return res.status(500).json({
-      status: 500,
-      message: "internal server error",
-    });
+    return Error500(res, e);
   }
 };

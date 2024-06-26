@@ -9,3 +9,7 @@ export const vendorRepo = db.getRepository(models.Vendor);
 export const developerRepo = db.getRepository(models.Developer);
 export const endUserRepo = db.getRepository(models.EndUser);
 export const storeManagerRepo = db.getRepository(models.StoreManager);
+
+export const orderRepo = db.getRepository(models.Orders);
+
+export const storeRepo = db.getRepository(models.Store);

@@ -11,6 +11,7 @@ import {
   vendorRepo,
 } from "../db/repo.db";
 import { AuthReq, userRole } from "../types/para";
+import { Error500 } from "./errorhandler.helper";
 
 export const checkRole = async (
   role: userRole | null,
@@ -101,10 +102,6 @@ export const checkAuth = async (
     req.role = role;
     return next();
   } catch (e) {
-    console.log(e);
-    return res.status(500).json({
-      status: 500,
-      message: "internal server error",
-    });
+    return Error500(res, e);
   }
 };

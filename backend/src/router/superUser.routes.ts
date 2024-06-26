@@ -1,15 +1,15 @@
 import { Router } from "express";
-
+import * as controller from "../controller";
 const router = Router();
 
-router.get("/dashboard");
+router.get("/dashboard", controller.SP_dashboard);
 
-router.get("/admins");
+router.get("/admins", controller.SP_GetAllAdmins);
 router.post("/create-admin");
 router.put("/update-admin");
 router.delete("/delete-admin");
 
-router.get("/store");
+router.get("/stores", controller.SP_GetAllStores);
 router.post("/create-store");
 router.put("/update-store");
 router.delete("/delete-store");
