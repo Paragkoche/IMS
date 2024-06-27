@@ -33,5 +33,5 @@ export const createAdminBody = z.object({
   email: z.string().email(),
   password: z.string(),
   username: z.string(),
-  role: z.enum(["admin"])
+  role: z.enum(["CEO","CTO","COO"])
 })

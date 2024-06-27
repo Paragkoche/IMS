@@ -55,10 +55,24 @@ export const SP_GetAllStores = async (
 export const SP_CreateAdmin = async (req: AuthReq<Admin>, res: Response)=>{
   try{
       const body = createAdminBody.safeParse(req.body);
-      if(!body){
+      if(!body.success){
         return res.status(400).json({
           status: 400,
           message: "invalid body",
+          errors: body.error.errors
+        });
+      }
+
+      const existingAdmin = await UserRepo.findOne({
+        where: {
+          email: body.data.email,
+        },
+      });
+
+      if(existingAdmin){
+        return res.status(409).json({
+          status: 409,
+          message: "email already exists",
         });
       }
 
@@ -70,8 +84,9 @@ export const SP_CreateAdmin = async (req: AuthReq<Admin>, res: Response)=>{
 
       let roleData = await adminRepo.save(
         adminRepo.create({
+          role: body.data.role,
           user: {
-            id: newAdmin.id
+            id: newAdmin.id,
           }
         })
       );
@@ -106,10 +121,11 @@ export const SP_updateAdmin = async (req: AuthReq<Admin>, res: Response)=> {
   try{
     const body = createAdminBody.safeParse(req.body);
     
-    if(!body){
+    if(!body.success){
       return res.status(400).json({
         status: 400,
         message: "invalid body",
+        errors: body.error.errors
       });
     }
 
@@ -126,9 +142,11 @@ export const SP_updateAdmin = async (req: AuthReq<Admin>, res: Response)=> {
       });
     };
 
-    const updatedAdmin = await UserRepo.save(
-      UserRepo.create({
-        id: ExistingAdmin.id,
+    const updatedAdmin = await adminRepo.save(
+      adminRepo.create({
+        user: {
+          id: ExistingAdmin.id,
+        },
        ...body.data
       })
     );
@@ -142,7 +160,7 @@ export const SP_updateAdmin = async (req: AuthReq<Admin>, res: Response)=> {
 
     return res.json({
       data: {
-        userData: updatedAdmin.toJson(),
+        userData: updatedAdmin,
         updatedAdmin
       }
     })
@@ -155,10 +173,11 @@ export const SP_updateAdmin = async (req: AuthReq<Admin>, res: Response)=> {
 export const SP_deleteAdmin = async (req: AuthReq<Admin>, res: Response) => {
   try{
     const body = createAdminBody.safeParse(req.body);
-    if(!body){
+    if(!body.success){
       return res.status(400).json({
         status: 400,
         message: "invalid body",
+        errors: body.error.errors
       });
     };
 
@@ -174,7 +193,7 @@ export const SP_deleteAdmin = async (req: AuthReq<Admin>, res: Response) => {
       });
     };
 
-    const deletedAdmin = await UserRepo.remove(admin);
+    const deletedAdmin = await UserRepo.delete(admin.id);
     if(!deletedAdmin){
       return res.status(500).json({
         status: 500,
