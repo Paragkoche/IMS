@@ -1,8 +1,10 @@
 import type { Response } from "express";
 import { AuthReq } from "../types/para";
-import { SuperAdmin } from "../model";
+import { Admin, SuperAdmin } from "../model";
 import { Error500 } from "../helper/errorhandler.helper";
-import { adminRepo, endUserRepo, orderRepo, storeRepo } from "../db/repo.db";
+import { UserRepo, adminRepo, endUserRepo, orderRepo, storeRepo } from "../db/repo.db";
+import { createAdminBody } from "../helper";
+import { createToken } from "../lib";
 export const SP_dashboard = async (req: AuthReq<SuperAdmin>, res: Response) => {
   try {
     const totalAdmins = await adminRepo.find({ select: { id: true } });
@@ -49,3 +51,143 @@ export const SP_GetAllStores = async (
     return Error500(res, e);
   }
 };
+
+export const SP_CreateAdmin = async (req: AuthReq<Admin>, res: Response)=>{
+  try{
+      const body = createAdminBody.safeParse(req.body);
+      if(!body){
+        return res.status(400).json({
+          status: 400,
+          message: "invalid body",
+        });
+      }
+
+      const newAdmin = await UserRepo.save(
+        UserRepo.create({
+          ...body.data
+        })
+      );
+
+      let roleData = await adminRepo.save(
+        adminRepo.create({
+          user: {
+            id: newAdmin.id
+          }
+        })
+      );
+
+      if(roleData == null){
+        return res.status(500).json({
+          status: 500,
+          message: "internal server error",
+        })
+      };
+
+      res.cookie("token", createToken({ id: newAdmin.id, role: "admin"}), {
+        path: "/",
+        httpOnly: true,
+        encode: btoa,
+        expires: new Date(new Date().setDate(new Date().getDate() + 30)),
+      })
+
+      return res.json({
+        data: {
+          userData: newAdmin.toJson(),
+          roleData,
+        },
+      });
+  }
+  catch(e){
+    return Error500(res,e);
+  }
+}
+
+export const SP_updateAdmin = async (req: AuthReq<Admin>, res: Response)=> {
+  try{
+    const body = createAdminBody.safeParse(req.body);
+    
+    if(!body){
+      return res.status(400).json({
+        status: 400,
+        message: "invalid body",
+      });
+    }
+
+    const ExistingAdmin = await UserRepo.findOne({
+      where: {
+        email: body.data?.email
+      }
+    });
+
+    if(!ExistingAdmin){
+      return res.status(404).json({
+        status: 404,
+        message: "Admin not found",
+      });
+    };
+
+    const updatedAdmin = await UserRepo.save(
+      UserRepo.create({
+        id: ExistingAdmin.id,
+       ...body.data
+      })
+    );
+
+    if(!updatedAdmin){
+      return res.status(500).json({
+        status: 500,
+        message: "Failed to update admin role data",
+      });
+    };
+
+    return res.json({
+      data: {
+        userData: updatedAdmin.toJson(),
+        updatedAdmin
+      }
+    })
+  }
+  catch(e){
+    return Error500(res,e);
+  }
+};
+
+export const SP_deleteAdmin = async (req: AuthReq<Admin>, res: Response) => {
+  try{
+    const body = createAdminBody.safeParse(req.body);
+    if(!body){
+      return res.status(400).json({
+        status: 400,
+        message: "invalid body",
+      });
+    };
+
+    const admin = await UserRepo.findOne({
+      where: {
+        email: body.data?.email
+      }
+    });
+    if(!admin){
+      return res.status(404).json({
+        status: 404,
+        message: "Admin not found",
+      });
+    };
+
+    const deletedAdmin = await UserRepo.remove(admin);
+    if(!deletedAdmin){
+      return res.status(500).json({
+        status: 500,
+        message: "Failed to delete admin",
+      });
+    };
+
+    return res.json({
+      status: 200,
+      message: "Admin deleted successfully",
+    })
+  }
+  catch(e){
+    return Error500(res,e);
+  }
+}

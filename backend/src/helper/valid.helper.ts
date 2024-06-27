@@ -28,3 +28,10 @@ export const LoginUserBody = z.object({
     "vendor",
   ]),
 });
+
+export const createAdminBody = z.object({
+  email: z.string().email(),
+  password: z.string(),
+  username: z.string(),
+  role: z.enum(["admin"])
+})
