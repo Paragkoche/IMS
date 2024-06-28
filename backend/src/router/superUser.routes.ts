@@ -10,9 +10,9 @@ router.put("/update-admin", controller.SP_updateAdmin);
 router.delete("/delete-admin", controller.SP_deleteAdmin);
 
 router.get("/stores", controller.SP_GetAllStores);
-router.post("/create-store");
-router.put("/update-store");
-router.delete("/delete-store");
+router.post("/create-store", controller.SP_CreateStore);
+router.put("/update-store", controller.SP_updateStore);
+router.delete("/delete-store", controller.SP_deleteStore);
 
 router.get("/payments");
 router.post("/pay-bill");

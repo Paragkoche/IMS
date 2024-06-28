@@ -34,4 +34,11 @@ export const createAdminBody = z.object({
   password: z.string(),
   username: z.string(),
   role: z.enum(["CEO","CTO","COO"])
-})
+});
+
+export const createStoreBody = z.object({
+  name: z.string().min(1),
+  address: z.string().min(1),
+  isOpen: z.boolean().default(false),
+  since: z.string()
+});
