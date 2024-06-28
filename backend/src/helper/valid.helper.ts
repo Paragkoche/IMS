@@ -47,3 +47,7 @@ export const payBillBody = z.object({
   price: z.string().min(1),
   method: z.enum(["UPI", "NET-BANK", "D-CARD", "C-CARD", "CASH"]),
 });
+
+export const AdminSetUpBody = z.object({
+  password: z.string(),
+});

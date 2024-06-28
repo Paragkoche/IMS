@@ -3,13 +3,15 @@ import { User } from "./user.model";
 
 @Entity()
 export class Admin {
-    @PrimaryGeneratedColumn("increment")
-    id: number
+  @PrimaryGeneratedColumn("increment")
+  id: number;
 
-    @Column()
-    role: string
+  @Column()
+  role: string;
 
-    @OneToOne(() => User, (user) => user.admin)
-    user: User
+  @Column({ default: true })
+  firstTimeLogin: boolean;
 
+  @OneToOne(() => User, (user) => user.admin)
+  user: User;
 }
