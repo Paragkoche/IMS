@@ -1,0 +1,18 @@
+import { Router } from "express";
+import * as controller from "../controller";
+const router = Router();
+
+router.get("/dashboard", controller.A_dashboard);
+router.post("set-up", controller.A_setUp);
+
+router.get("/get-manager", controller.A_getAllManagers);
+router.post("/create-manager", controller.A_createManager);
+router.delete("/delete-manager", controller.A_deleteManager);
+
+router.get("/items", controller.A_getAllItems);
+router.post("/create-item");
+router.put("/update-item");
+router.delete("/delete-item");
+
+export default router;
+

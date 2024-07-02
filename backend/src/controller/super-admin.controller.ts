@@ -2,8 +2,8 @@ import type { Response } from "express";
 import { AuthReq } from "../types/para";
 import { Admin, SuperAdmin } from "../model";
 import { Error500 } from "../helper/errorhandler.helper";
-import { UserRepo, adminRepo, endUserRepo, orderRepo, storeRepo } from "../db/repo.db";
-import { createAdminBody, createStoreBody } from "../helper";
+import { UserRepo, adminRepo, endUserRepo, orderPaymentRepo, orderRepo, storeOrderRepo, storeRepo } from "../db/repo.db";
+import { createAdminBody, createStoreBody, payBillBody } from "../helper";
 import { createToken } from "../lib";
 export const SP_dashboard = async (req: AuthReq<SuperAdmin>, res: Response) => {
   try {
@@ -334,4 +334,51 @@ export const SP_deleteStore = async (req: AuthReq<SuperAdmin>, res: Response) =>
   return res.json({
     message: "store deleted successfully",
   })
+};
+
+export const SP_getPayments = async (req: AuthReq<SuperAdmin>, res: Response) => {
+  try{
+    const data = storeOrderRepo.find({
+      relations: {
+        payment: true,
+      }
+    })
+
+    return res.json({
+      status: 200,
+      data,
+    });
+  }
+  catch(err){
+    return Error500(res, err);
+  };
+};
+
+export const SP_payBill = async (req: AuthReq<Admin>, res: Response) =>{
+  try{
+      const body = payBillBody.safeParse(req.body);
+
+      if(!body.success){
+          return res.status(400).json({
+              status: 400,
+              message: "invalid body",
+              error: body.error.errors,
+          });
+      };
+
+      const newPay = await orderPaymentRepo.save(
+          orderPaymentRepo.create({
+              price: body.data.price,
+              method: body.data.method,
+          })
+      );
+
+      return res.status(200).json({
+          status: 200,
+          data: newPay
+      })
+  }
+  catch(err){
+      return Error500(res,err);
+  }
 }
