@@ -43,22 +43,13 @@ export const createStoreBody = z.object({
   since: z.string(),
 });
 
-export const payBillBody = z.object({
-  price: z.string().min(1),
-  method: z.enum(["UPI", "NET-BANK", "D-CARD", "C-CARD", "CASH"]),
-});
-
 export const AdminSetUpBody = z.object({
   password: z.string(),
 });
 
 export const payBillBody = z.object({
   price: z.string().min(1),
-  method: z.enum(["UPI","NET-BANKING","D-CARD","C-CARD","CASH"]),
-});
-
-export const AdminSetUpBody = z.object({
-  password: z.string().min(1)
+  method: z.enum(["UPI", "NET-BANKING", "D-CARD", "C-CARD", "CASH"]),
 });
 
 export const createManagerBody = z.object({
@@ -70,9 +61,15 @@ export const createManagerBody = z.object({
   salary: z.string().min(1),
   age: z.number().min(1),
   address: z.string().min(1),
-  bond: z.string()
-})
+  bond: z.string(),
+  doc: z.array(
+    z.object({
+      name: z.string(),
+      link: z.string().base64(),
+    })
+  ),
+});
 
 export const deleteManagerBody = z.object({
-  id: z.number().min(1)
-})
+  id: z.number().min(1),
+});
