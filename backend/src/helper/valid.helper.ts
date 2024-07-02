@@ -33,14 +33,23 @@ export const createAdminBody = z.object({
   email: z.string().email(),
   password: z.string(),
   username: z.string(),
-  role: z.enum(["CEO","CTO","COO"])
+  role: z.enum(["CEO", "CTO", "COO"]),
 });
 
 export const createStoreBody = z.object({
   name: z.string().min(1),
   address: z.string().min(1),
   isOpen: z.boolean().default(false),
-  since: z.string()
+  since: z.string(),
+});
+
+export const payBillBody = z.object({
+  price: z.string().min(1),
+  method: z.enum(["UPI", "NET-BANK", "D-CARD", "C-CARD", "CASH"]),
+});
+
+export const AdminSetUpBody = z.object({
+  password: z.string(),
 });
 
 export const payBillBody = z.object({
