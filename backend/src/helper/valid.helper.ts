@@ -54,9 +54,16 @@ export const AdminSetUpBody = z.object({
 
 export const createManagerBody = z.object({
   name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string(),
+  username: z.string(),
   joinAt: z.string(),
   salary: z.string().min(1),
   age: z.number().min(1),
   address: z.string().min(1),
   bond: z.string()
+})
+
+export const deleteManagerBody = z.object({
+  id: z.number().min(1)
 })

@@ -3,7 +3,7 @@ import { AuthReq } from "../types/para";
 import { Admin } from "../model";
 import { Error500 } from "../helper/errorhandler.helper";
 import { UserRepo, itemsRepo, managerRepo} from "../db/repo.db";
-import { AdminSetUpBody, createManagerBody } from "../helper";
+import { AdminSetUpBody, createManagerBody, deleteManagerBody } from "../helper";
 import { genSalt, hash } from "bcrypt";
 import { createToken } from "../lib";
 
@@ -74,7 +74,7 @@ export const A_getAllManagers = async (req: AuthReq<Admin>, res: Response)=>{
 
 export const A_createManager = async (req: AuthReq<Admin>, res: Response)=>{
     try{
-        const body = await createManagerBody.safeParse(req.body);
+        const body = createManagerBody.safeParse(req.body);
 
         if(!body.success){
             return res.status(400).json({
@@ -86,7 +86,7 @@ export const A_createManager = async (req: AuthReq<Admin>, res: Response)=>{
 
         const existingManager = await UserRepo.findOne({
             where:{
-                username: req.body.name,
+                email: body.data.email
             }
         });
 
@@ -97,9 +97,16 @@ export const A_createManager = async (req: AuthReq<Admin>, res: Response)=>{
             });
         };
 
+        const newUser = await UserRepo.save(
+            UserRepo.create({
+                ...body.data
+            })
+        )
+
         const newManager = await managerRepo.save(
             managerRepo.create({
-                ...body.data
+                ...body.data,
+                user: {id: newUser.id}
             })
         );
 
@@ -110,7 +117,7 @@ export const A_createManager = async (req: AuthReq<Admin>, res: Response)=>{
             });
         };
 
-        res.cookie("token", createToken({ id: newManager.id, role: "manager"}), {
+        res.cookie("token", createToken({ id: newUser.id, role: "manager"}), {
             path: "/",
             httpOnly: true,
             encode: btoa,
@@ -129,7 +136,7 @@ export const A_createManager = async (req: AuthReq<Admin>, res: Response)=>{
 
 export const A_deleteManager = async (req: AuthReq<Admin>, res: Response) =>{
     try{
-        const body = createManagerBody.safeParse(req.body);
+        const body = deleteManagerBody.safeParse(req.body);
          
         if(!body.success){
             return res.status(400).json({
@@ -141,7 +148,7 @@ export const A_deleteManager = async (req: AuthReq<Admin>, res: Response) =>{
 
         const manager = await managerRepo.findOne({
             where:{
-                name: body.data.name
+                id: body.data.id
             }
         });
 
