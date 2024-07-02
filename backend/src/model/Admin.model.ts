@@ -9,7 +9,7 @@ export class Admin {
   @Column()
   role: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   firstTimeLogin: boolean;
 
   @OneToOne(() => User, (user) => user.admin)
