@@ -8,7 +8,10 @@ export class Manager {
     id: number
 
     @Column()
-    joinAt: Date
+    name: string
+
+    @Column()
+    joinAt: string
 
     @Column()
     salary: string
@@ -20,7 +23,7 @@ export class Manager {
     address: string
 
     @Column()
-    bond: Date
+    bond: string
 
     @OneToOne(() => User, (user) => user.manager)
     user: User;

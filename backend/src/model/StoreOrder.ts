@@ -30,12 +30,11 @@ export class StoreOrders {
   @JoinTable()
   items: Items[];
 
-  @OneToOne(() => Order_payment)
-  payment: Order_payment;
-
   @ManyToOne(() => deliveryPartner, (dp) => dp.storeOrder)
   dp: deliveryPartner;
 
+  @OneToOne(() => Order_payment)
+  payment: Order_payment;
   @ManyToOne(() => Vendor, (vendor) => vendor.orders)
   vendor: Vendor;
 }
