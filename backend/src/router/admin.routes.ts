@@ -10,8 +10,8 @@ router.post("/create-manager", controller.A_createManager);
 router.delete("/delete-manager", controller.A_deleteManager);
 
 router.get("/items", controller.A_getAllItems);
-router.post("/create-item");
-router.put("/update-item");
-router.delete("/delete-item");
+router.post("/create-item", controller.A_CreateItem);
+router.put("/update-item"); // H.W
+router.delete("/delete-item"); // H.W
 
 export default router;

@@ -1,16 +1,18 @@
 import { Response } from "express";
 import { AuthReq } from "../types/para";
 import { Admin } from "../model";
-import { Error500 } from "../helper/errorhandler.helper";
+import { BodyError, Error500 } from "../helper/errorhandler.helper";
 
 import {
   AdminSetUpBody,
+  createItemBody,
   createManagerBody,
   deleteManagerBody,
 } from "../helper";
 import {
   UserRepo,
   employeeDocRepo,
+  itemsImagesRepo,
   itemsRepo,
   managerRepo,
 } from "../db/repo.db";
@@ -201,12 +203,64 @@ export const A_deleteManager = async (req: AuthReq<Admin>, res: Response) => {
 
 export const A_getAllItems = async (req: AuthReq<Admin>, res: Response) => {
   try {
-    const data = await itemsRepo.find();
+    const { limit = 20, end = 1 } = req.query; // http://localhost:port/path?name=NAME&
+
+    const skip = Number(limit) * Number(end) - Number(limit);
+    const data = await itemsRepo.find({
+      take: Number(limit),
+      skip,
+    });
     return res.json({
-      status: 200,
-      data: data,
+      states: 200,
+      data,
     });
   } catch (err) {
     return Error500(res, err);
+  }
+};
+
+export const A_CreateItem = async (req: AuthReq<Admin>, res: Response) => {
+  try {
+    const body = createItemBody.safeParse(req.body);
+    if (!body.success) {
+      return BodyError(res, body.error.errors);
+    }
+    const newItem = await itemsImagesRepo.save(
+      itemsRepo.create({
+        name: body.data.name,
+        des: body.data.des,
+        price: body.data.price,
+      })
+    );
+    let images = [];
+    let k = 1;
+    for (let i of body.data.images) {
+      if (!fs.existsSync(`static/items/${newItem.id}`)) {
+        fs.mkdirSync(`static/items/${newItem.id}`, { recursive: true });
+      }
+      let file_path = `static/items/${newItem.id}/${randomUUID()}__${
+        newItem.name
+      }_${k}.png`;
+      fs.writeFileSync(file_path, i.url, "base64");
+      images.push(
+        await itemsImagesRepo.save(
+          itemsImagesRepo.create({ ...i, url: file_path })
+        )
+      );
+      k++;
+    }
+    await itemsRepo.save({
+      ...newItem,
+      images,
+    });
+    return res.json({
+      status: 200,
+      data: await itemsRepo.findOne({
+        where: { id: newItem.id },
+        relations: { images: true },
+      }),
+    });
+  } catch (e) {
+    return Error500(res, e);
   }
 };

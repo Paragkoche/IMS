@@ -73,3 +73,16 @@ export const createManagerBody = z.object({
 export const deleteManagerBody = z.object({
   id: z.number().min(1),
 });
+
+export const createItemBody = z.object({
+  name: z.string().min(1),
+  des: z.string().min(1),
+  price: z.string().min(1),
+  images: z.array(
+    z.object({
+      w: z.number().min(1),
+      h: z.number().min(1),
+      url: z.string().base64(),
+    })
+  ),
+});
