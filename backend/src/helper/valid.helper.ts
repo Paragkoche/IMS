@@ -43,7 +43,7 @@ export const createStoreBody = z.object({
   since: z.string(),
 });
 
-export const AdminSetUpBody = z.object({
+export const SetUpBody = z.object({
   password: z.string(),
 });
 
@@ -85,4 +85,10 @@ export const createItemBody = z.object({
       url: z.string().base64(),
     })
   ),
+});
+
+export const StoreManageReqOrderBody = z.object({
+  status: z.enum(["REQ", "CANCEL", "DELIVERY"]),
+  itemsId: z.array(z.number()),
+  orderId: z.number().optional(),
 });

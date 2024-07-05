@@ -4,10 +4,10 @@ import { Admin } from "../model";
 import { BodyError, Error500 } from "../helper/errorhandler.helper";
 
 import {
-  AdminSetUpBody,
   createItemBody,
   createManagerBody,
   deleteManagerBody,
+  SetUpBody,
 } from "../helper";
 import {
   UserRepo,
@@ -47,7 +47,7 @@ export const A_dashboard = async (req: AuthReq<Admin>, res: Response) => {
 
 export const A_setUp = async (req: AuthReq<Admin>, res: Response) => {
   try {
-    const body = AdminSetUpBody.safeParse(req.body);
+    const body = SetUpBody.safeParse(req.body);
 
     if (!body.success) {
       return res.status(400).json({

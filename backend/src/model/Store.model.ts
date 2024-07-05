@@ -1,29 +1,39 @@
-import { Column, Entity, JoinTable, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { StoreManager } from "./StoreManager.model";
 import { Items } from "./Item";
+import { StoreOrders } from "./StoreOrder";
 
 @Entity()
 export class Store {
-    @PrimaryGeneratedColumn("increment")
-    id: number;
+  @PrimaryGeneratedColumn("increment")
+  id: number;
 
-    @Column()
-    name: string
+  @Column()
+  name: string;
 
-    @Column()
-    address: string
+  @Column()
+  address: string;
 
-    @Column()
-    isOpen: boolean
+  @Column()
+  isOpen: boolean;
 
-    @Column()
-    since: Date
+  @Column()
+  since: Date;
 
-    @OneToOne(() => StoreManager, (StoreManage) => StoreManage.Store)
-    StoreManager: StoreManager;
+  @OneToOne(() => StoreManager, (StoreManage) => StoreManage.Store)
+  StoreManager: StoreManager;
 
+  @OneToMany(() => Items, (items) => items.store)
+  @JoinTable()
+  itemsAvailableInStore: Items[];
 
-    @OneToMany(() => Items, (items) => items.store)
-    @JoinTable()
-    itemsAvailableInStore: Items[]
+  @OneToMany(() => StoreOrders, (strO) => strO.store)
+  orders: StoreOrders[];
 }
