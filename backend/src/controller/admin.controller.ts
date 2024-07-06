@@ -264,3 +264,87 @@ export const A_CreateItem = async (req: AuthReq<Admin>, res: Response) => {
     return Error500(res, e);
   }
 };
+export const A_UpdateItem = async (req: AuthReq<Admin>, res: Response) =>{
+  try{
+      const body = createItemBody.safeParse(req.body);
+
+      if(!body.success){
+          return BodyError(res, body.error.errors);
+      }
+
+      const ExistingItem = await itemsRepo.findOne({
+          where: {
+              name: body.data.name
+          }
+      });
+
+      if(!ExistingItem){
+          return res.status(404).json({
+              status: 404,
+              message: "Item not found"
+          });
+      };
+
+      const updatedItem = await itemsRepo.save(
+          itemsRepo.create({
+              id: ExistingItem.id,
+              ...body.data
+          })
+      );
+
+      if(!updatedItem){
+          return res.status(500).json({
+              status: 500,
+              message: "Failed to update item"
+          });
+      };
+
+      return res.status(200).json({
+          status: 200,
+          data: updatedItem
+      })
+  }
+  catch(e){
+      return Error500(res,e);
+  }
+};
+
+export const A_deleteItem = async (req: AuthReq<Admin>, res: Response) =>{
+  try{
+      const body = createItemBody.safeParse(req.body);
+
+      if(!body.success){
+          return BodyError(res, body.error.errors);
+      }
+
+      const item = await itemsRepo.findOne({
+          where: {
+              name: body.data.name
+          }
+      });
+
+      if(!item){
+          return res.status(404).json({
+              status: 404,
+              message: "Item not found"
+          });
+      };
+
+      const deletedItem = await itemsRepo.delete(item?.name)
+
+      if(!deletedItem){
+          return res.status(500).json({
+              status: 500,
+              message: "Failed to delete item"
+          });
+      };
+
+      return res.status(200).json({
+          status: 200,
+          message: "Item deleted successfully"
+      });
+  }
+  catch(e){
+      return Error500(res,e);
+  }
+}
