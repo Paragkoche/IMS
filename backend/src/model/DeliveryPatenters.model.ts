@@ -1,37 +1,47 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Doc } from "./emplyeeDoc";
 import { Orders } from "./Order.model";
 import { StoreOrders } from "./StoreOrder";
+import { User } from "./user.model";
 
 @Entity()
 export class deliveryPartner {
-    @PrimaryGeneratedColumn("increment")
-    id: number;
+  @PrimaryGeneratedColumn("increment")
+  id: number;
 
-    @Column()
-    joinAt: Date;
+  @Column()
+  joinAt: Date;
 
-    @Column()
-    salary: string;
+  @Column()
+  salary: string;
 
-    @Column()
-    age: number;
+  @Column()
+  age: number;
 
-    @Column()
-    address: string;
+  @Column()
+  address: string;
 
-    @Column()
-    bond: Date
+  @Column()
+  bond: Date;
 
-    @Column()
-    liveLocation: string;
+  @Column()
+  liveLocation: string;
 
-    @OneToMany(() => Doc, (doc) => doc.deliveryP)
-    doc: Doc[]
+  @OneToMany(() => Doc, (doc) => doc.deliveryP)
+  doc: Doc[];
 
-    @OneToMany(() => Orders, (ord) => ord.dp)
-    ord: Orders[]
+  @OneToMany(() => Orders, (ord) => ord.dp)
+  ord: Orders[];
 
-    @OneToMany(() => StoreOrders, (SOrd) => SOrd.dp)
-    storeOrder: StoreOrders[]
+  @OneToMany(() => StoreOrders, (SOrd) => SOrd.dp)
+  storeOrder: StoreOrders[];
+
+  @OneToOne(() => User, (user) => user)
+  user: User;
 }

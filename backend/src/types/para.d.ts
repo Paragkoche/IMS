@@ -7,7 +7,8 @@ export type userRole =
   | "manager"
   | "endUser"
   | "storeManager"
-  | "vendor";
+  | "vendor"
+  | "DeliveryPartner";
 
 export interface AuthReq<T> extends Request {
   userData: User;

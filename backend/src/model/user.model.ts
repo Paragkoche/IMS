@@ -16,6 +16,7 @@ import { Manager } from "./Manager.model";
 import { EndUser } from "./EndUser.model";
 import { StoreManager } from "./StoreManager.model";
 import { Vendor } from "./vendor";
+import { deliveryPartner } from "./DeliveryPatenters.model";
 
 @Entity()
 export class User {
@@ -70,6 +71,8 @@ export class User {
   @OneToOne(() => Vendor, (vendor) => vendor.user)
   @JoinColumn()
   vendor: Vendor;
+  @OneToOne(() => deliveryPartner, (dp) => dp.user)
+  dp: deliveryPartner;
 
   @BeforeInsert()
   async hashPassword() {

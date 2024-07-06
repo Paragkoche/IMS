@@ -2,7 +2,8 @@ export * from "./auth.controller";
 export * from "./super-admin.controller";
 export * from "./admin.controller";
 export * from "./store-manager.controller";
-
+export * from "./manager.controller";
+export * from "./deliveryPatente.controller";
 /**
  *
  * REST API      - CRUD op*

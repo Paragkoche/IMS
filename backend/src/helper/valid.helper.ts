@@ -92,3 +92,21 @@ export const StoreManageReqOrderBody = z.object({
   itemsId: z.array(z.number()),
   orderId: z.number().optional(),
 });
+
+export const CreateDeliveryPartnerBody = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string(),
+  username: z.string(),
+  joinAt: z.string(),
+  salary: z.string(),
+  age: z.number(),
+  address: z.string(),
+  bond: z.string(),
+  doc: z.array(
+    z.object({
+      name: z.string(),
+      link: z.string().base64(),
+    })
+  ),
+});
