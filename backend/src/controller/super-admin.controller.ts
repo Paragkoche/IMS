@@ -1,7 +1,6 @@
 import type { Response } from "express";
 import { AuthReq } from "../types/para";
 import { Admin, SuperAdmin } from "../model";
-<<<<<<< HEAD
 import { BodyError, Error500 } from "../helper/errorhandler.helper";
 import {
   UserRepo,
@@ -12,10 +11,6 @@ import {
   storeOrderRepo,
   storeRepo,
 } from "../db/repo.db";
-=======
-import { Error500 } from "../helper/errorhandler.helper";
-import { UserRepo, adminRepo, endUserRepo, orderPaymentRepo, orderRepo, storeOrderRepo, storeRepo } from "../db/repo.db";
->>>>>>> d3e90860131c7c45fcd2cb7b69c01eeb4ebed8ec
 import { createAdminBody, createStoreBody, payBillBody } from "../helper";
 import { createToken } from "../lib";
 
@@ -335,22 +330,7 @@ export const SP_deleteStore = async (
 
   return res.json({
     message: "store deleted successfully",
-<<<<<<< HEAD
   });
-};
-
-export const SP_getPayments = async (
-  req: AuthReq<SuperAdmin>,
-  res: Response
-) => {
-  try {
-    const data = storeOrderRepo.find({
-      relations: {
-        payment: true,
-      },
-    });
-=======
-  })
 };
 
 export const SP_getPayments = async (req: AuthReq<SuperAdmin>, res: Response) => {
@@ -360,44 +340,13 @@ export const SP_getPayments = async (req: AuthReq<SuperAdmin>, res: Response) =>
         payment: true,
       }
     })
-
->>>>>>> d3e90860131c7c45fcd2cb7b69c01eeb4ebed8ec
     return res.json({
       status: 200,
       data,
     });
-<<<<<<< HEAD
   } catch (e) {
     return Error500(res, e);
   }
-};
-
-export const SP_payBill = async (req: AuthReq<SuperAdmin>, res: Response) => {
-  try {
-    const body = payBillBody.safeParse(req.body);
-
-    if (!body.success) {
-      return BodyError(res, body.error.errors);
-    }
-    const newPay = await orderPaymentRepo.save(
-      orderPaymentRepo.create({
-        price: body.data.price,
-        method: body.data.method,
-      })
-    );
-    return res.json({
-      status: 200,
-      data: newPay,
-    });
-  } catch (e) {
-    return Error500(res, e);
-  }
-};
-=======
-  }
-  catch(err){
-    return Error500(res, err);
-  };
 };
 
 export const SP_payBill = async (req: AuthReq<Admin>, res: Response) =>{
@@ -428,4 +377,3 @@ export const SP_payBill = async (req: AuthReq<Admin>, res: Response) =>{
       return Error500(res,err);
   }
 }
->>>>>>> d3e90860131c7c45fcd2cb7b69c01eeb4ebed8ec
