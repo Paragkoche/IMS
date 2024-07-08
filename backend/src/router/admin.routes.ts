@@ -11,7 +11,7 @@ router.delete("/delete-manager", controller.A_deleteManager);
 
 router.get("/items", controller.A_getAllItems);
 router.post("/create-item", controller.A_CreateItem);
-router.put("/update-item"); // H.W
-router.delete("/delete-item"); // H.W
+router.put("/update-item", controller.A_UpdateItem); // H.W
+router.delete("/delete-item", controller.A_deleteItem); // H.W
 
 export default router;

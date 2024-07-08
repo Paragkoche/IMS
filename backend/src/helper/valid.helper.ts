@@ -110,3 +110,32 @@ export const CreateDeliveryPartnerBody = z.object({
     })
   ),
 });
+
+export const CreateStoreManagerBody = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string(),
+  username: z.string(),
+  joinAt: z.date(),
+  salary: z.string(),
+  age: z.number(),
+  address: z.string(),
+  bond: z.string(),
+  doc: z.array(       //aditya:- doc object array ke andar hona chahiye maine galti ki ki object ko array k andar nahi likha.
+    z.object({
+      name: z.string(),
+      link: z.string().base64(),
+    })
+  )
+});
+
+export const CreateStoreBody = z.object({
+  name: z.string().min(1),
+  address: z.string().min(1),
+  isOpen: z.boolean().default(false),
+  since: z.date(),
+});
+
+export const CreateVendorBody = z.object({
+  role: z.string().min(1)
+})

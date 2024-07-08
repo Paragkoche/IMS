@@ -6,22 +6,22 @@ router.get("/dashboard", Controller.M_Dashboard);
 
 router.post("/set-up", Controller.M_setUp);
 
-router.get("/delivery-partner", Controller.M_createDeliveryPartner);
+router.get("/delivery-partner", Controller.M_getAllDeliveryPartners);
 
 //============================HW==========================
-router.post("/create-delivery-partner");
-router.delete("/delete-delivery-partner");
+router.post("/create-delivery-partner", Controller.M_createDeliveryPartner);
+router.delete("/delete-delivery-partner", Controller.M_deleteDeliveryPartners);
 
-router.get("/store-manager");
+router.get("/store-manager", Controller.M_getAllStoreManagers);
 router.post("/create-store-manager");
-router.delete("/delete-store-manager");
-router.put("/order-assign");
+router.delete("/delete-store-manager", Controller.M_deleteStoreManager);
+router.put("/order-assign", Controller.M_updateAssignedOrder);
 
-router.get("/store");
-router.post("/create-store");
-router.delete("/delete-store");
+router.get("/store", Controller.M_getAllStores);
+router.post("/create-store", Controller.M_createStore);
+router.delete("/delete-store", Controller.M_deleteStore);
 
-router.get("/vendor");
-router.post("/create-vendor");
-router.delete("/delete-vendor");
+router.get("/vendor", Controller.M_getAllVendors);
+router.post("/create-vendor", Controller.M_createVendor);
+router.delete("/delete-vendor", Controller.M_deleteVendor);
 //=============================HW============================

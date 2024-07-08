@@ -1,7 +1,7 @@
 import type { Response } from "express";
 import { AuthReq } from "../types/para";
 import { Admin, SuperAdmin } from "../model";
-
+<<<<<<< HEAD
 import { BodyError, Error500 } from "../helper/errorhandler.helper";
 import {
   UserRepo,
@@ -12,7 +12,10 @@ import {
   storeOrderRepo,
   storeRepo,
 } from "../db/repo.db";
-
+=======
+import { Error500 } from "../helper/errorhandler.helper";
+import { UserRepo, adminRepo, endUserRepo, orderPaymentRepo, orderRepo, storeOrderRepo, storeRepo } from "../db/repo.db";
+>>>>>>> d3e90860131c7c45fcd2cb7b69c01eeb4ebed8ec
 import { createAdminBody, createStoreBody, payBillBody } from "../helper";
 import { createToken } from "../lib";
 
@@ -345,7 +348,19 @@ export const SP_getPayments = async (
         payment: true,
       },
     });
+=======
+  })
+};
 
+export const SP_getPayments = async (req: AuthReq<SuperAdmin>, res: Response) => {
+  try{
+    const data = storeOrderRepo.find({
+      relations: {
+        payment: true,
+      }
+    })
+
+>>>>>>> d3e90860131c7c45fcd2cb7b69c01eeb4ebed8ec
     return res.json({
       status: 200,
       data,
@@ -355,30 +370,60 @@ export const SP_getPayments = async (
   }
 };
 
-export const SP_payBill = async (req: AuthReq<Admin>, res: Response) => {
+export const SP_payBill = async (req: AuthReq<SuperAdmin>, res: Response) => {
   try {
     const body = payBillBody.safeParse(req.body);
 
     if (!body.success) {
-      return res.status(400).json({
-        status: 400,
-        message: "invalid body",
-        error: body.error.errors,
-      });
+      return BodyError(res, body.error.errors);
     }
-
     const newPay = await orderPaymentRepo.save(
       orderPaymentRepo.create({
         price: body.data.price,
         method: body.data.method,
       })
     );
-
-    return res.status(200).json({
+    return res.json({
       status: 200,
       data: newPay,
     });
-  } catch (err) {
-    return Error500(res, err);
+  } catch (e) {
+    return Error500(res, e);
   }
 };
+=======
+  }
+  catch(err){
+    return Error500(res, err);
+  };
+};
+
+export const SP_payBill = async (req: AuthReq<Admin>, res: Response) =>{
+  try{
+      const body = payBillBody.safeParse(req.body);
+
+      if(!body.success){
+          return res.status(400).json({
+              status: 400,
+              message: "invalid body",
+              error: body.error.errors,
+          });
+      };
+
+      const newPay = await orderPaymentRepo.save(
+          orderPaymentRepo.create({
+              price: body.data.price,
+              method: body.data.method,
+          })
+      );
+
+      return res.status(200).json({
+          status: 200,
+          data: newPay
+      })
+  }
+  catch(err){
+      return Error500(res,err);
+  }
+}
+>>>>>>> d3e90860131c7c45fcd2cb7b69c01eeb4ebed8ec

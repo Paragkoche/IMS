@@ -5,6 +5,7 @@ import { Error500 } from "../helper/errorhandler.helper";
 import { deliveryPartner } from "../model";
 import { AuthReq } from "../types/para";
 import type { Response } from "express";
+
 export const dp_setUp = async (
   req: AuthReq<deliveryPartner>,
   res: Response
@@ -38,22 +39,22 @@ export const dp_dashboard = async (
   res: Response
 ) => {
   try {
-    const total_padding_orders = orderRepo.find({
+    const total_pending_orders = orderRepo.find({
       where: {
-        status: "padding",
+        status: "pending",
         dp: { id: req.roleData.id },
       },
     });
-    const total_padding_store_orders = storeOrderRepo.find({
+    const total_pending_store_orders = storeOrderRepo.find({
       where: {
-        status: "padding",
+        status: "pending",
         dp: { id: req.roleData.id },
       },
     });
     return res.json({
       data: {
-        storeOrder: total_padding_store_orders,
-        order: total_padding_orders,
+        storeOrder: total_pending_store_orders,
+        order: total_pending_orders,
       },
     });
   } catch (err) {
