@@ -13,7 +13,7 @@ router.post("/create-delivery-partner", Controller.M_createDeliveryPartner);
 router.delete("/delete-delivery-partner", Controller.M_deleteDeliveryPartners);
 
 router.get("/store-manager", Controller.M_getAllStoreManagers);
-router.post("/create-store-manager");
+router.post("/create-store-manager", Controller.M_createStoreManager);
 router.delete("/delete-store-manager", Controller.M_deleteStoreManager);
 router.put("/order-assign", Controller.M_updateAssignedOrder);
 

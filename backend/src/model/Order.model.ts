@@ -1,6 +1,7 @@
-import { Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Items } from "./Item";
 import { deliveryPartner } from "./DeliveryPatenters.model";
+import { bills } from "./bills.model";
 
 @Entity()
 export class Orders {
@@ -13,8 +14,8 @@ export class Orders {
     @Column()
     payment_status: string
 
-    @Column()
-    atNow: string;
+    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
+    atNow: Date;
 
     @OneToMany(() => Items, (item) => item.order)
     @JoinTable()
@@ -22,4 +23,7 @@ export class Orders {
 
     @ManyToOne(() => deliveryPartner, (dp) => dp.ord)
     dp: deliveryPartner;
+
+    @OneToOne(()=> bills, (bill) => bill.order)
+    bills: bills;
 }

@@ -14,7 +14,6 @@ router.post("/create-store", controller.SP_CreateStore);
 router.put("/update-store", controller.SP_updateStore);
 router.delete("/delete-store", controller.SP_deleteStore);
 
-router.get("/payments", controller.SP_getPayments);
 router.post("/pay-bill", controller.SP_payBill);
 
 export default router;

@@ -4,6 +4,7 @@ export * from "./admin.controller";
 export * from "./store-manager.controller";
 export * from "./manager.controller";
 export * from "./deliveryPatente.controller";
+export * from "./endUser.controller"
 /**
  *
  * REST API      - CRUD op*
