@@ -1,6 +1,6 @@
 import { genSalt, hash } from "bcrypt";
 import { orderRepo, storeOrderRepo, UserRepo } from "../db/repo.db";
-import { SetUpBody } from "../helper";
+import { DeliveredBody, SetUpBody } from "../helper";
 import { Error500 } from "../helper/errorhandler.helper";
 import { deliveryPartner } from "../model";
 import { AuthReq } from "../types/para";
@@ -59,5 +59,56 @@ export const dp_dashboard = async (
     });
   } catch (err) {
     return Error500(res, err);
+  }
+};
+
+export const dp_deliveredOrder = async (
+  req: AuthReq<deliveryPartner>,
+  res: Response
+) => {
+  try {
+    const body = DeliveredBody.safeParse(req.body);
+    if (!body.success) {
+      return res.status(400).json({
+        status: 400,
+        message: "invalid body",
+        error: body.error.errors,
+      });
+    }
+    const order = await orderRepo.findOne({
+      where: {
+        id: body.data.orderId,
+      },
+    });
+    if (!order) {
+      return res.status(404).json({
+        status: 404,
+        message: "Order is not found!",
+      });
+    }
+    await orderRepo.save({ ...order, status: body.data.status });
+    return res.json({
+      message: "OK",
+    });
+  } catch (e) {
+    return Error500(res, e);
+  }
+};
+
+export const dp_getAllOrders = async (
+  req: AuthReq<deliveryPartner>,
+  res: Response
+) => {
+  try {
+    const total_orders = orderRepo.find({
+      where: {
+        dp: { id: req.roleData.id },
+      },
+    });
+    return res.json({
+      data: total_orders,
+    });
+  } catch (e) {
+    return Error500(res, e);
   }
 };

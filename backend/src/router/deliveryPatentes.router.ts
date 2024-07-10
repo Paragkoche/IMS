@@ -6,10 +6,8 @@ router.get("/dashboard", Controller.dp_dashboard);
 
 router.post("/set-up", Controller.dp_setUp);
 
-router.put("/delivered-order");
+router.put("/status-order", Controller.dp_deliveredOrder);
 
-router.put("/cancel-order");
-
-router.get("/all-orders");
+router.get("/all-orders", Controller.dp_getAllOrders);
 
 export default router;

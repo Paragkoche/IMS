@@ -121,12 +121,13 @@ export const CreateStoreManagerBody = z.object({
   age: z.number(),
   address: z.string(),
   bond: z.string(),
-  doc: z.array(       //aditya:- doc object array ke andar hona chahiye maine galti ki ki object ko array k andar nahi likha.
+  doc: z.array(
+    //aditya:- doc object array ke andar hona chahiye maine galti ki ki object ko array k andar nahi likha.
     z.object({
       name: z.string(),
       link: z.string().base64(),
     })
-  )
+  ),
 });
 
 export const CreateStoreBody = z.object({
@@ -137,5 +138,10 @@ export const CreateStoreBody = z.object({
 });
 
 export const CreateVendorBody = z.object({
-  role: z.string().min(1)
-})
+  role: z.string().min(1),
+});
+
+export const DeliveredBody = z.object({
+  status: z.enum(["CANCEL", "DELIVERY"]),
+  orderId: z.number().min(1),
+});
