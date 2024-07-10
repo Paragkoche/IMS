@@ -145,3 +145,17 @@ export const DeliveredBody = z.object({
   status: z.enum(["CANCEL", "DELIVERY"]),
   orderId: z.number().min(1),
 });
+export const itemOrderBody = z.object({
+  name: z.string().min(1),
+  order: z.object({
+    status: z.enum(["CANCEL", "ORDERED"]),
+    payment_status: z.enum(["PAID", "UNPAID"]),
+  }),
+});
+
+export const EndUserBody = z.object({
+  age: z.number().min(1),
+  address: z.string().min(1),
+  name: z.string().min(1),
+  phoneNumber: z.string().min(1),
+});
