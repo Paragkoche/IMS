@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Orders } from "./Order.model";
 
 @Entity()
 export class bills {
@@ -13,5 +14,8 @@ export class bills {
 
     @CreateDateColumn({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
     created_at: Date;
+
+    @OneToOne(()=> Orders, (order)=> order.bills)
+    order: Orders;
 
 }
