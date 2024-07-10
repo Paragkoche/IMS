@@ -1,10 +1,11 @@
 import { genSalt, hash } from "bcrypt";
 import { orderRepo, storeOrderRepo, UserRepo } from "../db/repo.db";
-import { SetUpBody } from "../helper";
-import { Error500 } from "../helper/errorhandler.helper";
+import { DeliveredBody, SetUpBody } from "../helper";
+import { BodyError, Error500 } from "../helper/errorhandler.helper";
 import { deliveryPartner } from "../model";
 import { AuthReq } from "../types/para";
 import type { Response } from "express";
+import e from "express";
 
 export const dp_setUp = async (
   req: AuthReq<deliveryPartner>,
@@ -61,3 +62,52 @@ export const dp_dashboard = async (
     return Error500(res, err);
   }
 };
+
+export const dp_deliveredOrder = async (req: AuthReq<deliveryPartner>, res: Response) => {
+  try{
+    const body = DeliveredBody.safeParse(req.body);
+
+    if(!body.success){
+      return BodyError(res, body.error.errors);
+    };
+
+    const order = await orderRepo.findOne({
+      where: {
+        id: body.data.orderId,
+      }
+    })
+
+    if(!order){
+      return res.status(404).json({
+        status: 404,
+        message: "Order not found",
+      });
+    };
+
+    await orderRepo.save({ ...order, status: body.data.status })
+    return res.json({
+      status: 200,
+      data: order
+    })
+  }
+  catch(e){
+    return Error500(res, e);
+  }
+};
+
+export const dp_getAllOrders = async(req: AuthReq<deliveryPartner>, res: Response) => {
+  try{
+    const total_orders = await orderRepo.find({
+      where: {
+        dp: { id: req.roleData.id },
+      }
+    });
+
+    return res.json({
+      data: total_orders
+    })
+  }
+  catch(e){
+    return Error500(res, e)
+  }
+}
